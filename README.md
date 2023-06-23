@@ -4,6 +4,8 @@ This application is a simple interface to download musics and playlists from You
 
 You fill the input with the link of the music or playlist and click on the download button. The application will download the music and save it in the folder you choose.
 
+![Soundtube](./soundtube.png)
+
 # Prerequisites
 
 - [scdl](https://github.com/flyingrub/scdl) `pip3 install scdl`
