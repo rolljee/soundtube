@@ -4,8 +4,8 @@
 use std::process::Command;
 
 #[tauri::command]
-fn youtube_dl(url: &str, destination: &str) -> String {
-    let status = Command::new("yt-dlp")
+fn youtube_dl(url: &str, destination: &str) -> Result<String, String> {
+    let status = Command::new("/opt/homebrew/bin/yt-dlp")
         .args(["-f", "bestaudio/best"])
         .arg("-ciw")
         .args(["-o", "%(title)s.%(ext)s"])
@@ -16,24 +16,23 @@ fn youtube_dl(url: &str, destination: &str) -> String {
         .args(["-P", destination])
         .arg(url)
         .status()
-        .expect("failed to execute process");
+        .map_err(|err| err.to_string())?;
 
-
-    return status.to_string();
+    Ok(status.to_string())
 }
 
 #[tauri::command]
-fn soundcloud_dl(url: &str, destination: &str) -> String {
+fn soundcloud_dl(url: &str, destination: &str) -> Result<String, String> {
     println!("url: {}", url);
     println!("destination: {}", destination);
-    let status = Command::new("scdl")
+    let status = Command::new("/opt/homebrew/bin/scdl")
         .args(["--path", destination])
         .args(["-l", url])
         .arg("-c")
         .status()
-        .expect("failed to execute process");
+        .map_err(|err| err.to_string())?;
 
-    return status.to_string();
+    Ok(status.to_string())
 }
 
 fn main() {

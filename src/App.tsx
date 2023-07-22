@@ -11,20 +11,24 @@ function App() {
   async function downloadSongs() {
     try {
       setDownloading(true);
-  
+
       // if url is empty, return
       if (url === "") {
         return;
       }
-  
+
       // if url has youtube in it, invoke command youtube_dl
       if (url.includes("youtube")) {
-        await invoke("youtube_dl", { url, destination });
+        const result = await invoke("youtube_dl", { url, destination });
+
+        console.log(result);
       }
-  
+
       // if url has soundcloud in it, invoke command soundcloud_dl
       if (url.includes("soundcloud")) {
-        await invoke("soundcloud_dl", { url, destination });
+        const result = await invoke("soundcloud_dl", { url, destination });
+
+        console.log(result);
       }
     } catch (error) {
       console.error(error);
@@ -35,6 +39,9 @@ function App() {
 
   return (
     <div className="container">
+      <div className="row">
+        <img src="/128x128.png" alt="soundtube" width={128} height={128} />
+      </div>
       <div className="row">
         <a href="https://youtube.com" target="_blank">
           <img src="/youtube.svg" className="logo vite" alt="Youtube logo" />
@@ -85,7 +92,16 @@ function App() {
 
         <button type="submit">Download</button>
       </form>
-      {downloading && <p>Downloading ...</p>}
+      {downloading && (
+        <p>
+          <div className="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </p>
+      )}
     </div>
   );
 }
