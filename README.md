@@ -16,9 +16,6 @@ You fill the input with the link of the music or playlist and click on the downl
 # How to run in development mode
 
 ```bash
-# Clone this repository
-$ git clone <url>
-
 # Install deps
 $ npm install
 

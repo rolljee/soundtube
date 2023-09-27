@@ -7,6 +7,7 @@ function App() {
   const [downloading, setDownloading] = useState(false);
   const [destination, setDestination] = useState("/Users/ricky/Downloads");
   const [isModifyingDestination, setIsModifyingDestination] = useState(false);
+  const [currentPid, setCurrentPid] = useState(0);
 
   async function downloadSongs() {
     try {
@@ -19,16 +20,19 @@ function App() {
 
       // if url has youtube in it, invoke command youtube_dl
       if (url.includes("youtube")) {
-        const result = await invoke("youtube_dl", { url, destination });
+        const result = await invoke("youtube_dl", {
+          url,
+          destination,
+        });
 
-        console.log(result);
+        setCurrentPid(Number(result));
       }
 
       // if url has soundcloud in it, invoke command soundcloud_dl
       if (url.includes("soundcloud")) {
         const result = await invoke("soundcloud_dl", { url, destination });
 
-        console.log(result);
+        setCurrentPid(Number(result));
       }
     } catch (error) {
       console.error(error);
@@ -37,24 +41,22 @@ function App() {
     }
   }
 
+  async function killProcess() {
+    try {
+      const result = await invoke("kill_process", { pid: String(currentPid) });
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCurrentPid(0);
+    }
+  }
+
   return (
     <div className="container">
       <div className="row">
         <img src="/128x128.png" alt="soundtube" width={128} height={128} />
       </div>
-      <div className="row">
-        <a href="https://youtube.com" target="_blank">
-          <img src="/youtube.svg" className="logo vite" alt="Youtube logo" />
-        </a>
-        <a href="https://soundcloud.com" target="_blank">
-          <img
-            src="/soundcloud.svg"
-            className="logo react"
-            alt="Soundcloud logo"
-          />
-        </a>
-      </div>
-
       <div className="row margin-bottom-xl">
         <div className="col">
           {isModifyingDestination && (
@@ -76,7 +78,6 @@ function App() {
           </h4>
         </div>
       </div>
-
       <form
         className="row"
         onSubmit={(e) => {
@@ -102,6 +103,8 @@ function App() {
           </div>
         </p>
       )}
+      <p>Current PID: {currentPid}</p>{" "}
+      {currentPid !== 0 && <button onClick={(e) => killProcess()}>Kill</button>}
     </div>
   );
 }
